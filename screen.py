@@ -103,6 +103,7 @@ class ST7789v2:
         self.send_command(0x2B, y_offsets)
 
         data = text_data(text, scale_factor=scale_factor, on_colour=colour, rle=False)
+        # 0x41 for regular
         # 0x49 for RLE
         self.send_command(0x41, data)
 
