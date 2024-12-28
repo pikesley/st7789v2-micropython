@@ -37,11 +37,14 @@ class ST7789v2:
         self.background_colour = background_colour
         self.brightness = brightness
         self.invert_colours = invert_colours
+        self.rle = True
+
+        self.debug = False
 
         self.turn_on()
         self.set_inversion()
         self.rotate()
-        self.clear_screen()
+        self.clear()
 
     def turn_on(self):
         """Turn screen on."""
@@ -59,7 +62,7 @@ class ST7789v2:
 
         self.send_command(command, 0)
 
-    def clear_screen(self, colour=None):
+    def clear(self, colour=None):
         """Start again."""
         if colour:
             self.background_colour = colour
@@ -82,7 +85,7 @@ class ST7789v2:
 
         self.i2c.writeto_mem(self.device, command, bytearray(data))
 
-    def write_text(self, text, x, y, colour, scale_factor=2):
+    def write_text(self, text, colour, x="centered", y="centered", scale_factor=2):
         """Write the text at (x, y)."""
         offset = scale_factor * 8
         colour = reduce_colour(colour)
@@ -99,13 +102,30 @@ class ST7789v2:
             else [y, y + offset - 1]
         )
 
+        if self.debug:
+            self.send_command(
+                0x69,
+                [
+                    x_offsets[0] - scale_factor,
+                    y_offsets[0] - scale_factor,
+                    x_offsets[1] + scale_factor,
+                    y_offsets[1] + scale_factor,
+                    3,
+                ],
+            )
+
         self.send_command(0x2A, x_offsets)
         self.send_command(0x2B, y_offsets)
 
-        data = text_data(text, scale_factor=scale_factor, on_colour=colour, rle=False)
-        # 0x41 for regular
-        # 0x49 for RLE
-        self.send_command(0x41, data)
+        command = 0x49 if self.rle else 0x41
+        data = text_data(
+            text, scale_factor=scale_factor, on_colour=colour, rle=self.rle
+        )
+
+        if self.debug:
+            print(data)
+
+        self.send_command(command, data)
 
 
 # screen tools
@@ -187,7 +207,7 @@ def flatten(lists):
 
 def run_length_encode(data):
     """RLE a list."""
-    # TODO: there's a bug here
+    max_repeat = 254
     encoded = []
     accumulator = 0
     step = 0
@@ -202,6 +222,12 @@ def run_length_encode(data):
 
         else:
             encoded.append(accumulator + 1)
+            encoded.append(current)
+            accumulator = 0
+            current = nxt
+
+        if accumulator > max_repeat:
+            encoded.append(accumulator)
             encoded.append(current)
             accumulator = 0
             current = nxt

@@ -30,7 +30,7 @@ def test_clearing_screen():
     """Test we can clear the screen."""
     mocked_i2c = MagicMock()
     st = ST7789v2(i2c=mocked_i2c, background_colour=(255, 0, 0))
-    st.clear_screen()
+    st.clear()
 
     assert mocked_i2c.mock_calls[-1] == call.writeto_mem(
         62, 105, bytearray([0, 0, 240, 135, 224])
@@ -41,13 +41,13 @@ def test_clearing_screen_with_a_different_colour():
     """Test we clear the screen wth a different colour."""
     mocked_i2c = MagicMock()
     st = ST7789v2(i2c=mocked_i2c, background_colour=(255, 0, 0))
-    st.clear_screen()
+    st.clear()
 
     assert mocked_i2c.mock_calls[-1] == call.writeto_mem(
         62, 105, bytearray([0, 0, 240, 135, 224])
     )
 
-    st.clear_screen((0, 255, 0))
+    st.clear((0, 255, 0))
     assert mocked_i2c.mock_calls[-1] == call.writeto_mem(
         62, 105, bytearray([0, 0, 240, 135, 28])
     )
@@ -59,7 +59,7 @@ def test_writing_text():
     """Test we can write text."""
     mocked_i2c = MagicMock()
     st = ST7789v2(i2c=mocked_i2c, background_colour=(255, 0, 0))
-
+    st.rle = False
     st.write_text("A", x=0, y=0, colour=(0, 255, 0), scale_factor=1)
 
     assert mocked_i2c.mock_calls[-3] == call.writeto_mem(62, 42, bytearray([0, 7]))
@@ -132,6 +132,65 @@ def test_writing_text():
                 0,
                 0,
                 0,
+                0,
+            ]
+        ),
+    )
+
+
+def test_writing_rle_test():
+    """Test we can write run-length encoded text."""
+    mocked_i2c = MagicMock()
+    st = ST7789v2(i2c=mocked_i2c, background_colour=(255, 0, 0))
+
+    st.rle = True
+    st.write_text("A", x=0, y=0, colour=(0, 255, 0), scale_factor=1)
+    assert mocked_i2c.mock_calls[-1] == call.writeto_mem(
+        62,
+        73,
+        bytearray(
+            [
+                10,
+                0,
+                4,
+                28,
+                3,
+                0,
+                1,
+                28,
+                4,
+                0,
+                1,
+                28,
+                2,
+                0,
+                1,
+                28,
+                4,
+                0,
+                1,
+                28,
+                2,
+                0,
+                6,
+                28,
+                2,
+                0,
+                1,
+                28,
+                4,
+                0,
+                1,
+                28,
+                2,
+                0,
+                1,
+                28,
+                4,
+                0,
+                1,
+                28,
+                9,
                 0,
             ]
         ),
