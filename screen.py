@@ -12,11 +12,11 @@ size = {"x": 240, "y": 135}
 
 device = 0x3E
 
-font_path = "conf/font.json"
-if os.uname().sysname == "esp32":
-    font_path = "screen/conf/font.json"
+try:
+    file = open("font.json")  # noqa: SIM115, PTH123
+except OSError:
+    file = open("screen/font.json")  # noqa: SIM115, PTH123
 
-file = open(font_path)  # noqa: SIM115, PTH123
 sinclair = json.loads(file.read())
 
 

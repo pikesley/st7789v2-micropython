@@ -1,4 +1,4 @@
-from lib.screen import screen
+from screen.screen import screen
 
 text = "© 1982 Sinclair Research Ltd."
 scale_factor = 1

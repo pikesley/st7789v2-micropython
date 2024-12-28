@@ -2,8 +2,7 @@ default: format test clean
 
 push:
 	python -m mpremote cp -r *py :
-	python -m mpremote cp -r lib :
-	python -m mpremote cp -r conf :
+	python -m mpremote cp -r *json :
 
 connect:
 	python -m mpremote
@@ -39,6 +38,6 @@ flash:
 		--chip esp32c3 \
 		write_flash \
 		0x0 \
-		../firmware/c3-current
+		../../firmware/c3-current
 
 reinstall: nuke flash push connect
