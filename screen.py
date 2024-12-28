@@ -107,16 +107,7 @@ class ST7789v2:
         self.send_command(0x41, data)
 
 
-def rgb_to_332(rgb):
-    """Convert a 24-bit (r, g, b) colour to an rgb332 byte."""
-    # https://stackoverflow.com/a/25258336
-    red = floor(rgb[0] / 32) << 5
-    green = floor(rgb[1] / 32) << 2
-    blue = floor(rgb[2] / 64)
-
-    return red + green + blue
-
-
+# screen tools
 def horizontal_centering_offsets(text, scale_factor):
     """Provide x-offsets for centred text."""
     width = len(text) * 8 * scale_factor
@@ -135,14 +126,7 @@ def vertical_centering_offsets(scale_factor):
     return [top, bottom]
 
 
-def reduce_colour(rgb):
-    """Detect if we're given an RGB triple and replace with an RGB332 byte."""
-    if not isinstance(rgb, int):
-        rgb = rgb_to_332(rgb)
-
-    return rgb
-
-
+# font tools
 def bytes_to_bits(byte_list):
     """Turn bytes into lists of bits."""
     return [[int(i) for i in list(f"{byte:#010b}"[2:])] for byte in byte_list]
@@ -161,6 +145,17 @@ def scale_bits(bits, scale):
             scaled_bits.append(scaled_bits[-1])
 
     return scaled_bits
+
+
+def assemble_string(*characters):
+    """Assemble characters into horizontal strings."""
+    string = []
+    for i in range(len(characters[0])):
+        string.append([])
+        for character in characters:
+            string[-1] += character[i]
+
+    return string
 
 
 def colour_bits(bits, on_colour, off_colour):
@@ -182,17 +177,6 @@ def colour_bits(bits, on_colour, off_colour):
                     coloured_bits[-1].append(element)
 
     return coloured_bits
-
-
-def assemble_string(*characters):
-    """Assemble characters into horizontal strings."""
-    string = []
-    for i in range(len(characters[0])):
-        string.append([])
-        for character in characters:
-            string[-1] += character[i]
-
-    return string
 
 
 def flatten(lists):
@@ -242,6 +226,25 @@ def text_data(text, scale_factor=2, on_colour=255, off_colour=0, rle=False):  # 
         return run_length_encode(flattened)
 
     return flattened
+
+
+# colour tools
+def reduce_colour(rgb):
+    """Detect if we're given an RGB triple and replace with an RGB332 byte."""
+    if not isinstance(rgb, int):
+        rgb = rgb_to_332(rgb)
+
+    return rgb
+
+
+def rgb_to_332(rgb):
+    """Convert a 24-bit (r, g, b) colour to an rgb332 byte."""
+    # https://stackoverflow.com/a/25258336
+    red = floor(rgb[0] / 32) << 5
+    green = floor(rgb[1] / 32) << 2
+    blue = floor(rgb[2] / 64)
+
+    return red + green + blue
 
 
 if os.uname().sysname == "esp32":
