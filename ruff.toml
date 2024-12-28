@@ -1,0 +1,61 @@
+extend-exclude = []
+line-length = 88
+target-version = "py311"
+lint.ignore = [
+  "D100", # modules don't need docstrings
+  "D104", # disable requirement for package docstrings
+  "D203", # a blank line is ugly
+  "D213", # multi line summaries go on the first line
+  "FIX", # Don't worry about FIXMEs etc.
+  "S101" # alerting on assert being used is mad when unit tests exist
+]
+lint.select = [
+  "A", # flake8-builtins
+  "ARG", # flake8-unused-arguments
+  "B", # flake8-bugbear
+  "BLE", # flake8-blind-except
+  "C",
+  "C4", # flake8-comprehensions
+  "C90", # mccabe
+  "D", # pydocstyle
+  "DTZ", # flake8-datetimez
+  "E", # pycodestyle errors
+  "EM", # flake8-errmsg
+  "EXE", # flake8-executable
+  "F",
+  "FBT", # flake8-boolean-trap
+  "FIX", # flake8-fixme
+  "FLY", # flynt
+  "G", # flake8-logging-format
+  "I", # isort
+  "ICN", # flake8-import-conventions
+  "N", # PEP8 naming
+  "PERF", # perflint
+  "PIE", # flake8-pie
+  "PL", # pylint
+  "PT", # flake8-pytest-style
+  "PTH", # flake8-use-pathlib
+  "Q", # flake8-quotes
+  "RET", # flake8-return
+  "RSE", # flake8-raise
+  "RUF", # Ruff rules
+  "S", # flake8-bandit
+  "SIM", # flake8-simplify
+  "SLF", # flake8-self
+  "SLOT", # flake8-slots
+  "T10", # flake8-debugger
+  "TCH", # flake8-type-checking
+  "TID", # flake8-tidy-imports
+  "TRY", # tryceratops
+  "UP", # pyupgrade
+  "W", # pycodestyle warnings
+  "YTT" # flake8-2020
+]
+
+[lint.flake8-builtins]
+builtins-ignorelist = [
+  "id"
+]
+
+[lint.mccabe]
+max-complexity = 10
