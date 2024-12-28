@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, call
 
-from lib.screen import ST7789v2
+from screen import ST7789v2
 
 
 def test_initialisation():

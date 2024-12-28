@@ -1,4 +1,4 @@
-from lib.font_tools import (
+from screen import (
     assemble_string,
     bytes_to_bits,
     colour_bits,

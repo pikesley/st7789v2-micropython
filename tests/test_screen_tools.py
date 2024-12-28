@@ -1,4 +1,4 @@
-from lib.screen_tools import (
+from screen import (
     horizontal_centering_offsets,
     rgb_to_332,
     vertical_centering_offsets,
