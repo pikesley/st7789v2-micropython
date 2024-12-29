@@ -83,7 +83,10 @@ class ST7789v2:
         if not isinstance(data, list):
             data = [data]
 
-        self.i2c.writeto_mem(self.device, command, bytearray(data))
+        try:  # noqa: SIM105
+            self.i2c.writeto_mem(self.device, command, bytearray(data))
+        except OSError:
+            pass
 
     def write_text(self, text, colour, x="centered", y="centered", scale_factor=2):
         """Write the text at (x, y)."""
