@@ -12,11 +12,7 @@ size = {"x": 240, "y": 135}
 
 device = 0x3E
 
-try:
-    file = open("font.json")  # noqa: SIM115, PTH123
-except OSError:
-    file = open("screen/font.json")  # noqa: SIM115, PTH123
-
+file = open("font.json")  # noqa: SIM115, PTH123
 sinclair = json.loads(file.read())
 
 
@@ -38,8 +34,6 @@ class ST7789v2:
         self.brightness = brightness
         self.invert_colours = invert_colours
         self.rle = True
-
-        self.debug = False
 
         self.turn_on()
         self.set_inversion()
@@ -105,18 +99,6 @@ class ST7789v2:
             else [y, y + offset - 1]
         )
 
-        if self.debug:
-            self.send_command(
-                0x69,
-                [
-                    x_offsets[0] - scale_factor,
-                    y_offsets[0] - scale_factor,
-                    x_offsets[1] + scale_factor,
-                    y_offsets[1] + scale_factor,
-                    3,
-                ],
-            )
-
         self.send_command(0x2A, x_offsets)
         self.send_command(0x2B, y_offsets)
 
@@ -124,9 +106,6 @@ class ST7789v2:
         data = text_data(
             text, scale_factor=scale_factor, on_colour=colour, rle=self.rle
         )
-
-        if self.debug:
-            print(data)
 
         self.send_command(command, data)
 
@@ -205,11 +184,15 @@ def colour_bits(bits, on_colour, off_colour):
 
 def flatten(lists):
     """Flatten some lists."""
-    return sum(lists, [])  # noqa: RUF017
+    result = []
+    for item in lists:
+        result += item
+    return result
 
 
 def run_length_encode(data):
     """RLE a list."""
+    # we can only send a byte at a time
     max_repeat = 254
     encoded = []
     accumulator = 0

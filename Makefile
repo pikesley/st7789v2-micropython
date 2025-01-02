@@ -1,4 +1,22 @@
+ID = $(shell basename $$(pwd))
+
 default: format test clean
+
+build:
+	docker build \
+		--build-arg ID=${ID} \
+		--tag ${ID} .
+
+run:
+	docker run \
+		--name ${ID} \
+		--hostname ${ID} \
+		--volume $(shell pwd):/opt/${ID} \
+		--interactive \
+		--tty \
+		--rm \
+		${ID} \
+		bash
 
 push:
 	python -m mpremote cp -r *py :
@@ -6,9 +24,6 @@ push:
 
 connect:
 	python -m mpremote
-
-mount:
-	python -m mpremote mount .
 
 format:
 	ruff format
@@ -19,7 +34,7 @@ clean:
 	@find . -depth -name .ruff_cache -exec rm -fr {} \;
 	@find . -depth -name .pytest_cache -exec rm -fr {} \;
 
-test: export TEST = 1
+# test: export TEST = 1
 test:
 	python -m pytest \
 		--random-order \
@@ -30,14 +45,20 @@ test:
 
 nuke:
 	python -m esptool \
-		--chip esp32c3 \
 		erase_flash
 
-flash:
+flash-mini:
 	python -m esptool \
 		--chip esp32c3 \
 		write_flash \
 		0x0 \
-		../../firmware/c3-current
+		../esp32-firmware/c3-current
 
-reinstall: nuke flash push connect
+flash:
+	python -m esptool \
+		--chip esp32 \
+		write_flash \
+		0x1000 \
+		../esp32-firmware/current
+
+reinstall: nuke flash-mini push connect
