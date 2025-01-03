@@ -20,7 +20,7 @@ run:
 
 push:
 	python -m mpremote cp -r *py :
-	python -m mpremote cp -r *json :
+	python -m mpremote cp -r st7789v2 :
 
 connect:
 	python -m mpremote

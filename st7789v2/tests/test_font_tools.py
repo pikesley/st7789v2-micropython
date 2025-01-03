@@ -1,4 +1,4 @@
-from screen import (
+from st7789v2.lib.font_tools import (
     assemble_string,
     bytes_to_bits,
     colour_bits,
@@ -63,14 +63,14 @@ def test_colour_bits():
         [0, 1, 0, 0],
     ]
 
-    assert colour_bits(bits, 4, 0) == [
+    assert list(colour_bits(bits, 4, 0)) == [
         [0, 0, 0, 0],
         [0, 4, 0, 0],
         [0, 4, 4, 4],
         [0, 4, 0, 0],
     ]
 
-    assert colour_bits(bits, (127, 255), (0, 63)) == [
+    assert list(colour_bits(bits, (127, 255), (0, 63))) == [
         [0, 63, 0, 63, 0, 63, 0, 63],
         [0, 63, 127, 255, 0, 63, 0, 63],
         [0, 63, 127, 255, 127, 255, 127, 255],
@@ -109,4 +109,21 @@ def test_flattener():
         [0, 0, 1, 0],
         [0, 0, 0, 0],
     ]
-    assert flatten(bits) == [0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0]
+
+    assert list(flatten(bits)) == [
+        (0, 1),
+        (1, 1),
+        (1, 0),
+        (0, 0),
+        (0, 1),
+        (1, 1),
+        (1, 1),
+        (1, 0),
+        (0, 0),
+        (0, 1),
+        (1, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+    ]
