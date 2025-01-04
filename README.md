@@ -25,8 +25,6 @@ The screen has four wires, which I connected like:
 
 The following presumes that your device [already has the micropython firmware on it](https://micropython.org/download/ESP32_GENERIC_C3/), and that you can run [`mpremote`](https://docs.micropython.org/en/latest/reference/mpremote.html).
 
-I've tested this only on my Mac, but I presume it'll mostly work elsewhere:
-
 ### Get the code
 
 ```bash
@@ -56,20 +54,11 @@ This will (probably) copy the code across, then wait. If you hit `ctrl-D`, it wi
 
 ![clock](st7789v2-clock.jpg)
 
-[`mpremote`](https://github.com/espressif/esptool) seems to be quite good at detecting connected devices and selecting the correct USB device, but if it doesn't work for you, you might need to amend the `make` target with a `device` argument or something
-
-```make
-push:
-	python -m mpremote cp -r *py :
-	python -m mpremote cp -r *json :
-
-connect:
-	python -m mpremote
-```
+[`mpremote`](https://github.com/espressif/esptool) seems to be quite good at detecting connected devices and selecting the correct USB device, so if you've only got one ESP32 connected to your laptop, you're probably fine.
 
 ## The code
 
-There are a load of tests, which can run on the Docker container:
+There are a load of tests, which you can run on the Docker container:
 
 ```bash
 make build
@@ -118,7 +107,7 @@ There are commands to draw individual pixels, rectangles, and even whole images,
 
 ## The font
 
-If you know me, you might know that I'm [marginally obsessed](https://sam.pikesley.org/talks/#vandalising-your-github-commit-history-emf-2014) with the [Sinclair Spectrum character set](https://sam.pikesley.org/projects/1982/), so obviously that was my choice for rendering here. The whole thing fits into [a set of lists of lists of bytes](https://github.com/pikesley/st7789v2-micropython/blob/docs/st7789v2/conf/font.json), and with [a little manipulation it's easy to scale it up](https://github.com/pikesley/st7789v2-micropython/blob/docs/st7789v2/tests/test_font_tools.py#L25-L54).
+If you know me, you might know that I'm [moderately obsessed](https://sam.pikesley.org/talks/#vandalising-your-github-commit-history-emf-2014) with the [Sinclair Spectrum character set](https://sam.pikesley.org/projects/1982/), so obviously that was my choice for rendering here. The whole thing fits into [a set of lists of lists of bytes](https://github.com/pikesley/st7789v2-micropython/blob/docs/st7789v2/conf/font.json), and with [a little manipulation it's easy to scale it up](https://github.com/pikesley/st7789v2-micropython/blob/docs/st7789v2/tests/test_font_tools.py#L25-L54).
 
 ## Run-Length Encoding
 
@@ -127,7 +116,7 @@ The screen also supports the rendering of images compressed with [run-length enc
 ## Putting it all together
 
 So each character of our string is
-* looked up in the character-set
+* looked up in the character-set, and
 * scaled up
 
 Then
@@ -136,7 +125,7 @@ Then
 * run-length encoded, and then
 * the resulting bytes are made available from a [generator](https://wiki.python.org/moin/Generators)
 
-My early bumblings didn't bother with a generator and just attempted to yeet the entire list at the rendering tools, but it's remarkably easy to make your tiny microcontroller run out of memory, so we have to do it this way.
+My early bumblings didn't bother with a generator and just attempted to yeet the entire list at the rendering tools, but it's remarkably easy to make your tiny microcontroller run out of memory, so we're doing it this way.
 
 ## Using the tool
 
