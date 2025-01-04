@@ -54,7 +54,7 @@ make push connect
 
 This will (probably) copy the code across, then wait. If you hit `ctrl-D`, it will reboot, connect to your wifi, sync its time over NTP and start showing a clock:
 
-![clock](clock.jpg)
+![clock](st7789v2-clock.jpg)
 
 [`mpremote`](https://github.com/espressif/esptool) seems to be quite good at detecting connected devices and selecting the correct USB device, but if it doesn't work for you, you might need to amend the `make` target with a `device` argument or something
 
