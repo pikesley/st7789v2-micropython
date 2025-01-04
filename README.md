@@ -79,6 +79,7 @@ make run
 and then
 
 ```bash
+make
 ```
 
 If the code has a slightly "bashed together over the Christmas holidays without much organisation" feel to it, that's because that's exactly what happened.
