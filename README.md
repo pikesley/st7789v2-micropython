@@ -29,6 +29,10 @@ I've tested this only on my Mac, but I presume it'll mostly work elsewhere:
 
 ### Get the code
 
+```bash
+git clone https://github.com/pikesley/st7789v2-micropython.git
+cd st7789v2-micropython
+```
 
 
 ### Configure your wifi secrets
