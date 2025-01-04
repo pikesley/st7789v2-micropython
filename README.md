@@ -131,7 +131,8 @@ So each character of our string is
 
 Then
 * the characters are joined together horizontally
-* the whole thing is colourised, and then
+* the whole thing is colourised,
+* run-length encoded, and then
 * the resulting bytes are made available from a [generator](https://wiki.python.org/moin/Generators)
 
 My early bumblings didn't bother with a generator and just attempted to yeet the entire list at the rendering tools, but it's remarkably easy to make your tiny microcontroller run out of memory, so we have to do it this way.
